@@ -4,14 +4,11 @@ import com.pahod.model.User;
 import com.pahod.repository.storage.CommonInMemoryStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 // TODO: YANGI KISS SOLID DRY
-// SL4g
-//@Repository
 @Component
 public class UserDAO implements IUserDAO {
 

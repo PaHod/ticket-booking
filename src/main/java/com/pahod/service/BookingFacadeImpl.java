@@ -3,12 +3,16 @@ package com.pahod.service;
 import com.pahod.model.Event;
 import com.pahod.model.Ticket;
 import com.pahod.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class BookingFacadeImpl implements BookingFacade {
+
+    private static final Logger logger = LoggerFactory.getLogger(BookingFacadeImpl.class);
 
     EventService eventService;
     TicketService ticketService;
@@ -46,7 +50,6 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
 
-
     @Override
     public Ticket buyTicket(Ticket ticket) {
         Integer eventId = ticket.getEventId();
@@ -54,6 +57,7 @@ public class BookingFacadeImpl implements BookingFacade {
             eventService.soldTicketsForEvent(eventId, 1);
             return ticketService.addTicket(ticket);
         }
+        logger.warn("couldn't sell ticket for eventId: {} check Id or consider adding chairs.", eventId);
         return null;
     }
 
@@ -79,8 +83,6 @@ public class BookingFacadeImpl implements BookingFacade {
     public List<Ticket> getAllSoldTicketsForEvent(Integer eventId) {
         return ticketService.getAllTicketsByEventId(eventId);
     }
-
-
 
 
     @Override

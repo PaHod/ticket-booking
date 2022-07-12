@@ -34,7 +34,7 @@ public class CommonInMemoryStorage {
         return nextId;
     }
 
-//    // TODO: KISS
+    // TODO: try to use @PostConstruct
 //    @PostConstruct
 //    void init() {
 //

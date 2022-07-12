@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -16,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-
+// TODO: might be simplified by @PostConstruct
 public class StorageInitializationPostProcessor implements BeanPostProcessor {
 
     private JsonNode jsonTree;
@@ -35,14 +33,10 @@ public class StorageInitializationPostProcessor implements BeanPostProcessor {
         for (Field field : declaredFields) {
             if (field.isAnnotationPresent(AutoInitWithDemoData.class)) {
                 try {
+
                     fillTheMap(bean, field);
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -50,8 +44,6 @@ public class StorageInitializationPostProcessor implements BeanPostProcessor {
 
         return bean;
     }
-
-    // TODO: is this the best approach?
 
     /**
      * as the @Value annotation is processed be BeanPostProcessor filePath is not available on constructor phase.
@@ -65,7 +57,6 @@ public class StorageInitializationPostProcessor implements BeanPostProcessor {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -85,7 +76,6 @@ public class StorageInitializationPostProcessor implements BeanPostProcessor {
             maxId = Math.max(maxId, id);
         }
 
-        // TODO: think how update this values better
         Field declaredField = bean.getClass().getDeclaredField("lastIdForClass");
         Map<Class<?>, Integer> lastIdForClass = (Map<Class<?>, Integer>) declaredField.get(bean);
         lastIdForClass.put(entityClass, maxId);

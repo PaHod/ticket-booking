@@ -12,17 +12,19 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class EntryPoint {
 
-    private static Logger logger = LoggerFactory.getLogger(EntryPoint.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(EntryPoint.class);
 
     public static void main(String[] args) {
-        logger.info("main method started");
-        logger.debug("You should do it using Unit tests");
-
         ApplicationContext context = new ClassPathXmlApplicationContext("application-config.xml");
         BookingFacadeImpl facade = context.getBean(BookingFacadeImpl.class);
-        Event event = facade.newEvent(
-                new Event(null, "Nevidialna Vystava", "Komora", 15));
+
+        logger.trace("A TRACE Message");
+        logger.debug("A DEBUG Message");
+        logger.info("An INFO Message");
+        logger.warn("A WARN Message");
+        logger.error("An ERROR Message");
+
+        Event event = facade.newEvent(new Event(null, "Rock Simphony", "Palac Ukraina", 5000));
 
 
         User johanUser = facade.newUser(new User(null, "Johan"));
@@ -31,36 +33,31 @@ public class EntryPoint {
         facade.buyTicket(new Ticket(null, johanUser.getId(), event.getId(), 202, 500L));
         facade.buyTicket(new Ticket(null, peterUser.getId(), event.getId(), 101, 750L));
 
-        printUsers(facade);
-        printTickets(facade);
-        printEvents(facade);
+        printAllUsers(facade);
+        printAllTickets(facade);
+        printAllEvents(facade);
 
-        System.out.println("");
-        System.out.println("total revenue for event \"" + event.getName() + "\" is: " + facade.getTotalRevenueForEvent(event.getId()));
+        logger.info("Total revenue for event \"{}\" is: {}", event.getName(), facade.getTotalRevenueForEvent(event.getId()));
 
-        CommonInMemoryStorage bean = context.getBean(CommonInMemoryStorage.class);
-        System.out.println(bean);
-
+        CommonInMemoryStorage storage = context.getBean(CommonInMemoryStorage.class);
+        logger.trace("print all the storage: {}", storage);
     }
 
-    private static void printUsers(BookingFacadeImpl facade) {
-        System.out.println(">>>> printUsers");
+    private static void printAllUsers(BookingFacadeImpl facade) {
         for (User user : facade.allUsers()) {
-            System.out.println(user);
+            logger.trace(user.toString());
         }
     }
 
-    private static void printTickets(BookingFacadeImpl facade) {
-        System.out.println(">>>> printTickets");
+    private static void printAllTickets(BookingFacadeImpl facade) {
         for (Ticket allSoldTicket : facade.getAllSoldTickets()) {
-            System.out.println(allSoldTicket);
+            logger.trace(allSoldTicket.toString());
         }
     }
 
-    private static void printEvents(BookingFacadeImpl facade) {
-        System.out.println(">>>> printEvents");
+    private static void printAllEvents(BookingFacadeImpl facade) {
         for (Event event : facade.getAllEvents()) {
-            System.out.println(event);
+            logger.trace(event.toString());
         }
     }
 }

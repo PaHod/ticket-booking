@@ -19,15 +19,15 @@ public class UserService {
         return repository.saveUser(user);
     }
 
+    public List<User> getAllUsers() {
+        return repository.getAllUsers();
+    }
+
     public User updateUser(User user) {
         return repository.saveUser(user);
     }
 
     public void deleteUser(Integer userId) {
         repository.deleteUser(userId);
-    }
-
-    public List<User> getAllUsers() {
-        return repository.getAllUsers();
     }
 }
