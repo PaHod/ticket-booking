@@ -8,4 +8,6 @@ interface IUserDAO {
 
 
     List<User> getAllUsers();
+
+    User getUserById(Integer userId);
 }

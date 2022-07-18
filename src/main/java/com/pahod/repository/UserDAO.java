@@ -27,12 +27,17 @@ public class UserDAO implements IUserDAO {
         return savedUser;
     }
 
-    public void deleteUser(Integer userId) {
-        storage.getUsers().remove(userId);
+    @Override
+    public User getUserById(Integer userId) {
+        return storage.getUsers().get(userId);
     }
 
     @Override
     public List<User> getAllUsers() {
         return new ArrayList<>(storage.getUsers().values());
+    }
+
+    public void deleteUser(Integer userId) {
+        storage.getUsers().remove(userId);
     }
 }

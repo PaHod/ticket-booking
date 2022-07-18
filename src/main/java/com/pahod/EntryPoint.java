@@ -7,15 +7,16 @@ import com.pahod.repository.storage.CommonInMemoryStorage;
 import com.pahod.service.BookingFacadeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class EntryPoint {
 
     private static final Logger logger = LoggerFactory.getLogger(EntryPoint.class);
 
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("application-config.xml");
+        ApplicationContext context = SpringApplication.run(TicketBookingApplication.class, args);
+
         BookingFacadeImpl facade = context.getBean(BookingFacadeImpl.class);
 
         logger.trace("A TRACE Message");
@@ -50,7 +51,7 @@ public class EntryPoint {
     }
 
     private static void printAllTickets(BookingFacadeImpl facade) {
-        for (Ticket allSoldTicket : facade.getAllSoldTickets()) {
+        for (Ticket allSoldTicket : facade.getBookedTickets()) {
             logger.trace(allSoldTicket.toString());
         }
     }

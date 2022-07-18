@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-//@Component
 @AllArgsConstructor
 @NoArgsConstructor
 public class Event {

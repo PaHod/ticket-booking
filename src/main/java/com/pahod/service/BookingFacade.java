@@ -12,9 +12,11 @@ public interface BookingFacade {
 
     User newUser(User user);
 
-    User updateUserDetails(User user);
+    User getUserById(Integer userId);
 
     List<User> allUsers();
+
+    User updateUserDetails(User user);
 
     void deleteUser(Integer userId);
 
@@ -25,12 +27,12 @@ public interface BookingFacade {
 
     void returnTicket(Integer ticketId, Integer userId);
 
-    List<Ticket> getAllSoldTickets();
+    List<Ticket> getBookedTickets();
 
     List<Ticket> getAllSoldTicketsForEvent(Integer eventId);
 
 
-    Event newEvent(Event user);
+    Event newEvent(Event event);
 
     List<Event> getAllEvents();
 

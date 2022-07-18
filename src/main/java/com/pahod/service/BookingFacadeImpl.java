@@ -33,6 +33,11 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
+    public User getUserById(Integer userId) {
+        return userService.getUserById(userId);
+    }
+
+    @Override
     public User updateUserDetails(User user) {
         return userService.updateUser(user);
     }
@@ -75,7 +80,7 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
-    public List<Ticket> getAllSoldTickets() {
+    public List<Ticket> getBookedTickets() {
         return ticketService.getAllTickets();
     }
 

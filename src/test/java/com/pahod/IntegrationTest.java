@@ -3,20 +3,14 @@ package com.pahod;
 import com.pahod.model.Event;
 import com.pahod.model.Ticket;
 import com.pahod.model.User;
-import com.pahod.repository.storage.StorageInitializationPostProcessor;
 import com.pahod.service.BookingFacade;
-import com.pahod.service.EventService;
-import com.pahod.service.TicketService;
-import com.pahod.service.UserService;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -30,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class IntegrationTest {
 
     @InjectMocks
-    private ApplicationContext context = new ClassPathXmlApplicationContext("application-config.xml");
+    private ApplicationContext context = SpringApplication.run(TicketBookingApplication.class);
 
     private BookingFacade facade;
     private Event event0;

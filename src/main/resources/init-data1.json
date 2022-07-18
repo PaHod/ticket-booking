@@ -1,0 +1,215 @@
+{
+  "users": {
+    "0": {
+      "id": 0,
+      "name": "Andjey Duda"
+    },
+    "1": {
+      "id": 1,
+      "name": "JonsonUK"
+    },
+    "2": {
+      "id": 2,
+      "name": "Joseph Baiden"
+    },
+    "3": {
+      "id": 3,
+      "name": "Peter"
+    },
+    "4": {
+      "id": 4,
+      "name": "Johan"
+    },
+    "5": {
+      "id": 5,
+      "name": "Paul"
+    },
+    "7": {
+      "id": 7,
+      "name": "Viktor"
+    },
+    "8": {
+      "id": 8,
+      "name": "Stepan Bandera"
+    },
+    "79": {
+      "id": 79,
+      "name": "Rusnia"
+    }
+  },
+  "tickets": {
+    "0": {
+      "id": 0,
+      "userId": 0,
+      "eventId": 0,
+      "seat": 731,
+      "price": 475
+    },
+    "1": {
+      "id": 1,
+      "userId": 1,
+      "eventId": 1,
+      "seat": 650,
+      "price": 850
+    },
+    "2": {
+      "id": 2,
+      "userId": 2,
+      "eventId": 2,
+      "seat": 912,
+      "price": 650
+    },
+    "3": {
+      "id": 3,
+      "userId": 3,
+      "eventId": 3,
+      "seat": 71,
+      "price": 470
+    },
+    "4": {
+      "id": 4,
+      "userId": 3,
+      "eventId": 4,
+      "seat": 57,
+      "price": 550
+    },
+    "5": {
+      "id": 5,
+      "userId": 4,
+      "eventId": 5,
+      "seat": 135,
+      "price": 400
+    },
+    "6": {
+      "id": 6,
+      "userId": 5,
+      "eventId": 6,
+      "seat": 657,
+      "price": 750
+    },
+    "7": {
+      "id": 7,
+      "userId": 5,
+      "eventId": 7,
+      "seat": 1887,
+      "price": 250
+    },
+    "8": {
+      "id": 8,
+      "userId": 5,
+      "eventId": 8,
+      "seat": 3247,
+      "price": 550
+    },
+    "9": {
+      "id": 9,
+      "userId": 7,
+      "eventId": 9,
+      "seat": 13,
+      "price": 600
+    },
+    "10": {
+      "id": 10,
+      "userId": 7,
+      "eventId": 0,
+      "seat": 732,
+      "price": 475
+    },
+    "11": {
+      "id": 11,
+      "userId": 8,
+      "eventId": 1,
+      "seat": 651,
+      "price": 850
+    },
+    "12": {
+      "id": 12,
+      "userId": 79,
+      "eventId": 77,
+      "seat": 1,
+      "price": 150000
+    },
+    "13": {
+      "id": 13,
+      "userId": 79,
+      "eventId": 77,
+      "seat": 2,
+      "price": 150000
+    },
+    "21": {
+      "id": 21,
+      "userId": 79,
+      "eventId": 77,
+      "seat": 3,
+      "price": 150000
+    }
+  },
+  "events": {
+    "0": {
+      "id": 0,
+      "name": "Queens",
+      "concertHallName": "Palac Sportu",
+      "availableSeats": 10000
+    },
+    "1": {
+      "id": 1,
+      "name": "Mgzavrebi",
+      "concertHallName": "Palac Sportu",
+      "availableSeats": 10000
+    },
+    "2": {
+      "id": 2,
+      "name": "Deep Purple",
+      "concertHallName": "Palac Sportu",
+      "availableSeats": 10000
+    },
+    "3": {
+      "id": 3,
+      "name": "Jazz on the Roof",
+      "concertHallName": "The Roof",
+      "availableSeats": 475
+    },
+    "4": {
+      "id": 4,
+      "name": "Skriabin",
+      "concertHallName": "The Roof",
+      "availableSeats": 475
+    },
+    "5": {
+      "id": 5,
+      "name": "Okean Elzy",
+      "concertHallName": "Palac Ukraina",
+      "availableSeats": 2500
+    },
+    "6": {
+      "id": 6,
+      "name": "Zaz",
+      "concertHallName": "Palac Ukraina",
+      "availableSeats": 2500
+    },
+    "7": {
+      "id": 7,
+      "name": "Scorpions",
+      "concertHallName": "MVC",
+      "availableSeats": 5000
+    },
+    "8": {
+      "id": 8,
+      "name": "Moto show",
+      "concertHallName": "MVC",
+      "availableSeats": 5000
+    },
+    "9": {
+      "id": 9,
+      "name": "Jazz on the Beach",
+      "concertHallName": "UBK (Kyiv)",
+      "availableSeats": 550
+    },
+    "77": {
+      "id": 77,
+      "name": "Kobzon",
+      "concertHallName": "the hell",
+      "availableSeats": 500000
+    }
+  }
+}

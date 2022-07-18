@@ -19,6 +19,10 @@ public class UserService {
         return repository.saveUser(user);
     }
 
+    public User getUserById(Integer userId) {
+        return repository.getUserById(userId);
+    }
+
     public List<User> getAllUsers() {
         return repository.getAllUsers();
     }
