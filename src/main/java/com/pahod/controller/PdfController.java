@@ -27,7 +27,7 @@ public class PdfController {
 
 
     /**
-     * example: http://localhost:8084/tickets-app/ticketsPDF?displayType=view&userId=5&pageSize=4&pageNum=2
+     * example: http://localhost:8084/ticketsPDF?displayType=view&userId=5&pageSize=4&pageNum=2
      */
     @GetMapping(value = "/ticketsPDF", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> getBookedTickets(@PathParam("displayType") String displayType,

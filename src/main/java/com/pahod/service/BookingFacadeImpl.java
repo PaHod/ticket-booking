@@ -167,14 +167,15 @@ public class BookingFacadeImpl implements BookingFacade {
             if (file.isEmpty()) {
                 throw new EmptyFileException(file.getOriginalFilename());
             }
+//            printUploadedFile(file);
 
             JAXBContext jaxbContext = JAXBContext.newInstance(Ticket.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            Ticket unmarshal = (Ticket) unmarshaller.unmarshal(new StreamSource(file.getInputStream()));
+            Ticket parsedTicket = (Ticket) unmarshaller.unmarshal(new StreamSource(file.getInputStream()));
 
-            logger.info(">>>>> " + unmarshal);
+            logger.info(">>>>>>>>> parsedTicket: " + parsedTicket);
             List<Ticket> ticketsBatch = new ArrayList<>();
-            ticketsBatch.add(unmarshal);
+            ticketsBatch.add(parsedTicket);
 
             ticketsBatch.forEach(this::buyTicket);
         } catch (Exception e) {
