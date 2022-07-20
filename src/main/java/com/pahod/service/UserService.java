@@ -1,5 +1,6 @@
 package com.pahod.service;
 
+import com.pahod.exception.UserNotFoundException;
 import com.pahod.model.User;
 import com.pahod.repository.UserDAO;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @NoArgsConstructor
@@ -16,10 +18,10 @@ public class UserService {
     UserDAO repository;
 
     public User addUser(User user) {
-        return repository.saveUser(user);
+        return repository.addUser(user);
     }
 
-    public User getUserById(Integer userId) {
+    public User getUserById(long userId) {
         return repository.getUserById(userId);
     }
 
@@ -28,10 +30,10 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        return repository.saveUser(user);
+        return repository.updateUser(user);
     }
 
-    public void deleteUser(Integer userId) {
+    public void deleteUser(long userId) {
         repository.deleteUser(userId);
     }
 }

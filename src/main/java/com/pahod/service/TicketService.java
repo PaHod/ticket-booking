@@ -1,6 +1,7 @@
 package com.pahod.service;
 
 import com.pahod.model.Ticket;
+import com.pahod.model.User;
 import com.pahod.repository.TicketDAO;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
@@ -20,14 +21,14 @@ public class TicketService {
 
     public Ticket addTicket(Ticket ticket) {
         logger.info("Buy ticket: " + ticket);
-        return repository.saveTicket(ticket);
+        return repository.addTicket(ticket);
     }
 
-    public Ticket getTicket(Integer ticketId) {
+    public Ticket getTicket(long ticketId) {
         return repository.getTicket(ticketId);
     }
 
-    public List<Ticket> getTicketsByUserId(Integer userId) {
+    public List<Ticket> getTicketsByUserId(long userId) {
         return repository.getTicketsByUserId(userId);
     }
 
@@ -36,17 +37,18 @@ public class TicketService {
     }
 
     public Ticket updateTicket(Ticket ticket) {
-        return repository.saveTicket(ticket);
+        return repository.updateTicket(ticket);
     }
 
-    public void returnTicket(Integer ticketId, Integer userId) {
+    public boolean returnTicket(long ticketId, long userId) {
         Ticket ticket = repository.getTicket(ticketId);
-        if (ticket.getUserId().equals(userId)) {
-            repository.deleteTicket(ticketId);
+        if (ticket.getUserId() == userId) {
+           return repository.deleteTicket(ticketId);
         }
+        return false;
     }
 
-    public List<Ticket> getAllTicketsByEventId(Integer eventId) {
+    public List<Ticket> getAllTicketsByEventId(Long eventId) {
         logger.trace("getAllTicketsByEventId: " + eventId);
 
         return repository.getAllTicketsByEventId(eventId);

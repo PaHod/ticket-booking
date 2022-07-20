@@ -10,7 +10,7 @@ class TicketTest {
     @Test
     void updateFrom_all_field_updated() {
         //given
-        int id = 11;
+       long id = 11;
         Ticket ticketTemplate = new Ticket(id, 9, 12, 201, 550L);
         Ticket ticketToUpdate = new Ticket();
         ticketToUpdate.setId(id);

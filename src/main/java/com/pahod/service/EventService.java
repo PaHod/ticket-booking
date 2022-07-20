@@ -19,10 +19,10 @@ public class EventService {
     EventDAO repository;
 
     public Event addEvent(Event event) {
-        return repository.saveEvent(event);
+        return repository.addEvent(event);
     }
 
-    public Event getEvent(Integer eventId) {
+    public Event getEvent(long eventId) {
         return repository.getEvent(eventId);
     }
 
@@ -30,12 +30,12 @@ public class EventService {
         return repository.getAllEvents();
     }
 
-    public void soldTicketsForEvent(Integer eventId, int soldSeats) {
+    public void soldTicketsForEvent(long eventId, int soldSeats) {
         Event event = getEvent(eventId);
         event.setAvailableSeats(event.getAvailableSeats() - soldSeats);
     }
 
-    public boolean checkAvailableSeats(Integer eventId, Integer requiredSeats) {
+    public boolean checkAvailableSeats(long eventId, int requiredSeats) {
         logger.trace("check if there available seats for eventId: {}", eventId);
         return getEvent(eventId) != null && getEvent(eventId).getAvailableSeats() >= requiredSeats;
     }

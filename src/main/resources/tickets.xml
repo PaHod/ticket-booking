@@ -1,0 +1,9 @@
+<tickets>
+    <ticket  userId="3" eventId= "3" place= "71"   price= "470"/>
+    <ticket  userId="3" eventId= "4" place= "57"   price= "550"/>
+    <ticket  userId="4" eventId= "5" place= "135"  price= "400"/>
+    <ticket  userId="5" eventId= "6" place= "657"  price= "750"/>
+    <ticket  userId="5" eventId= "7" place= "1887" price= "250"/>
+    <ticket  userId="5" eventId= "8" place= "3247" price= "550"/>
+    <ticket  userId="7" eventId= "9" place= "13"   price= "600"/>
+</tickets>

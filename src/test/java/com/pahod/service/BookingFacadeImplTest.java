@@ -41,7 +41,7 @@ class BookingFacadeImplTest {
     @Test
     void newUser() {
         //given
-        User user = new User(null, "Johan");
+        User user = new User(0, "Johan", "Johan@mail.test");
 
         Mockito.when(userService.addUser(any())).thenAnswer(invocation -> user);
 
@@ -57,14 +57,18 @@ class BookingFacadeImplTest {
     @Test
     void buyTicket_seats_checked() {
         //given
-        int eventId = 23;
-        Ticket ticket = Mockito.spy(new Ticket(null, 12, eventId, 202, 500L));
+        long eventId = 23;
+        int expectedSeats = 1;
+        Ticket ticket = Mockito.spy(new Ticket(0, 12, eventId, 202, 500L));
 
-        Mockito.when(eventService.checkAvailableSeats(any(), any())).then(invocation -> {
-            Integer passedEventId = invocation.getArgument(0);
-            Integer passedRequiredSeats = invocation.getArgument(1);
+        Mockito
+                .when(eventService
+                        .checkAvailableSeats(any(Long.class), any(Integer.class)))
+                .then(invocation -> {
+            long passedEventId = invocation.getArgument(0);
+            int passedRequiredSeats = invocation.getArgument(1);
             assertEquals(eventId, passedEventId);
-            assertEquals(1, passedRequiredSeats);
+            assertEquals(expectedSeats, passedRequiredSeats);
             return false;
         });
 
@@ -73,24 +77,25 @@ class BookingFacadeImplTest {
 
         //then
         Mockito.verify(ticket, Mockito.times(1)).getEventId();
-        Mockito.verify(eventService, Mockito.times(1)).checkAvailableSeats(any(), any());
+        Mockito.verify(eventService, Mockito.times(1)).checkAvailableSeats(any(Long.class), any(Integer.class));
     }
 
     @Test
     void buyTicket_sold_tickets_notification() {
         //given
-        int eventId = 23;
-        Ticket ticket = Mockito.spy(new Ticket(null, 12, eventId, 202, 500L));
+        long eventId = 23;
+        int expectedSeats = 1;
+        Ticket ticket = Mockito.spy(new Ticket(0, 12, eventId, 202, 500L));
 
-        Mockito.when(eventService.checkAvailableSeats(any(), any())).thenAnswer(invocation -> true);
+        Mockito.when(eventService.checkAvailableSeats(any(Long.class), any(Integer.class))).thenAnswer(invocation -> true);
         Mockito.doAnswer(invocation -> {
-            Integer passedEventId = invocation.getArgument(0);
-            Integer passedRequiredSeats = invocation.getArgument(1);
+            long passedEventId = invocation.getArgument(0);
+            int passedRequiredSeats = invocation.getArgument(1);
 
             assertEquals(eventId, passedEventId);
-            assertEquals(1, passedRequiredSeats);
+            assertEquals(expectedSeats, passedRequiredSeats);
             return null;
-        }).when(eventService).soldTicketsForEvent(any(Integer.class), any(Integer.class));
+        }).when(eventService).soldTicketsForEvent(any(Long.class), any(Integer.class));
 
 
         //when
@@ -98,15 +103,15 @@ class BookingFacadeImplTest {
 
         //then
         Mockito.verify(ticket, Mockito.times(1)).getEventId();
-        Mockito.verify(eventService, Mockito.times(1)).soldTicketsForEvent(any(Integer.class), any(Integer.class));
+        Mockito.verify(eventService, Mockito.times(1)).soldTicketsForEvent(any(Long.class), any(Integer.class));
     }
 
     @Test
     void buyTicket_call_repository_add_ticket() {
         //given
-        Ticket ticket = Mockito.spy(new Ticket(null, 12, 23, 202, 500L));
+        Ticket ticket = Mockito.spy(new Ticket(0, 12, 23, 202, 500L));
 
-        Mockito.when(eventService.checkAvailableSeats(any(), any())).thenAnswer(invocation -> true);
+        Mockito.when(eventService.checkAvailableSeats(any(Long.class), any(Integer.class))).thenAnswer(invocation -> true);
         Mockito.when(ticketService.addTicket(any())).thenAnswer(invocation -> ticket);
 
         //when
@@ -120,16 +125,16 @@ class BookingFacadeImplTest {
     @Test
     void buyTicket_no_available_seats() {
         //given
-        Ticket ticket = Mockito.spy(new Ticket(null, 12, 23, 202, 500L));
+        Ticket ticket = Mockito.spy(new Ticket(0, 12, 23, 202, 500L));
 
-        Mockito.when(eventService.checkAvailableSeats(any(Integer.class), any(Integer.class))).thenAnswer(invocation -> false);
+        Mockito.when(eventService.checkAvailableSeats(any(Long.class), any(Integer.class))).thenAnswer(invocation -> false);
 
         //when
         Ticket returnedTicket = bookingFacade.buyTicket(ticket);
 
         //then
-        Mockito.verify(eventService, Mockito.times(1)).checkAvailableSeats(any(Integer.class), any(Integer.class));
-        Mockito.verify(eventService, Mockito.times(0)).soldTicketsForEvent(any(Integer.class), any(Integer.class));
+        Mockito.verify(eventService, Mockito.times(1)).checkAvailableSeats(any(Long.class), any(Integer.class));
+        Mockito.verify(eventService, Mockito.times(0)).soldTicketsForEvent(any(Long.class), any(Integer.class));
         Mockito.verify(ticketService, Mockito.times(0)).addTicket(any());
         assertNull(returnedTicket);
     }
@@ -137,37 +142,38 @@ class BookingFacadeImplTest {
     @Test
     void returnTicket_success() {
         //given
-        int userId = 12;
-        int ticketId = 125;
+        long userId = 12;
+        long ticketId = 125;
         Ticket ticket = Mockito.spy(new Ticket(ticketId, userId, 23, 202, 500L));
 
-        Mockito.when(ticketService.getTicket(any())).thenAnswer(invocation -> ticket);
+        Mockito.when(ticketService.getTicket(any(Long.class))).thenAnswer(invocation -> ticket);
+        Mockito.when(ticketService.returnTicket(any(Long.class), any(Long.class))).thenAnswer(invocation -> true);
 
         //when
         bookingFacade.returnTicket(ticketId, userId);
 
         //then
-        Mockito.verify(ticketService, Mockito.times(1)).getTicket(any());
+        Mockito.verify(ticketService, Mockito.times(1)).getTicket(any(Long.class));
         Mockito.verify(ticket, Mockito.times(1)).getUserId();
-        Mockito.verify(ticketService, Mockito.times(1)).returnTicket(any(Integer.class), any(Integer.class));
+        Mockito.verify(ticketService, Mockito.times(1)).returnTicket(any(Long.class), any(Long.class));
     }
 
     @Test
     void returnTicket_wrong_userid() {
         //given
-        int userId = 12;
-        int ticketId = 125;
+        long userId = 12;
+        long ticketId = 125;
         Ticket ticket = Mockito.spy(new Ticket(ticketId, userId, 23, 202, 500L));
 
-        Mockito.when(ticketService.getTicket(any())).thenAnswer(invocation -> ticket);
+        Mockito.when(ticketService.getTicket(any(Long.class))).thenAnswer(invocation -> ticket);
 
         //when
         bookingFacade.returnTicket(ticketId, userId + 1);
 
         //then
-        Mockito.verify(ticketService, Mockito.times(1)).getTicket(any());
+        Mockito.verify(ticketService, Mockito.times(1)).getTicket(any(Long.class));
         Mockito.verify(ticket, Mockito.times(1)).getUserId();
-        Mockito.verify(ticketService, Mockito.times(0)).returnTicket(any(), any());
+        Mockito.verify(ticketService, Mockito.times(0)).returnTicket(any(Long.class), any(Long.class));
     }
 
     @Test
@@ -182,7 +188,7 @@ class BookingFacadeImplTest {
     @Test
     void newEvent() {
         //given
-        Event event = new Event(null, "Nevidialna Vystava", "Komora", 15);
+        Event event = Event.builder().title("Nevidialna Vystava").location("Komora").availableSeats(1000).build();
 
         Mockito.when(eventService.addEvent(any())).thenAnswer(invocation -> event);
 

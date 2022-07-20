@@ -10,8 +10,8 @@ class EventTest {
     @Test
     void updateFrom_all_field_updated() {
         //given
-        Integer id = 15;
-        Event eventTemplate = new Event(id, "Concert", "Cnocert Hall", 1000);
+        long id = 15;
+        Event eventTemplate = Event.builder().id(id).title("Concert").location("Cnocert Hall").availableSeats(1000).build();
         Event eventToUpdate = new Event();
         eventToUpdate.setId(id);
 
@@ -25,7 +25,7 @@ class EventTest {
     @Test
     void updateFrom_all_id_not_updated() {
         //given
-        Event eventTemplate = new Event(15, "Concert", "Cnocert Hall", 1000);
+        Event eventTemplate = Event.builder().id(15).title("Concert").location("Cnocert Hall").availableSeats(1000).build();
         Event eventToUpdate = new Event();
 
         //when

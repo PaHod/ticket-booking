@@ -26,7 +26,7 @@ class TicketDAOTest {
     CommonInMemoryStorage storage;
 
     @Spy
-    Map<Integer, Ticket> ticketsMapSpy = new HashMap<>();
+    Map<Long, Ticket> ticketsMapSpy = new HashMap<>();
 
     @InjectMocks
     TicketDAO ticketDAO;
@@ -40,14 +40,14 @@ class TicketDAOTest {
     @Test
     void saveTicket_new_ticket_retrieved_from_storage() {
         //given
-        int presetId = 151;
+       long presetId = 151;
         Ticket ticketMock = Mockito.spy(new Ticket(presetId, 9, 12, 201, 550L));
 
         Mockito.when(storage.getTickets()).then(invocation -> ticketsMapSpy);
         Mockito.when(ticketsMapSpy.get(presetId)).then(invocation -> ticketMock);
 
         //when
-        Ticket savedTicket = ticketDAO.saveTicket(ticketMock);
+        Ticket savedTicket = ticketDAO.updateTicket(ticketMock);
 
         //then
         verify(storage, times(1)).getTickets();
@@ -55,17 +55,17 @@ class TicketDAOTest {
     }
 
     @Test
-    void saveTicket_add_new_id_generated() {
+    void addTicket_add_new_id_generated() {
         //given
-        Ticket ticket = new Ticket(null, 9, 12, 201, 550L);
-        int generatedId = 151;
+        Ticket ticket = new Ticket(0, 9, 12, 201, 550L);
+       long generatedId = 151;
 
         Mockito.when(storage.getTickets()).then(invocation -> ticketsMapSpy);
 
         Mockito.when(storage.generateNextIdForClass(any())).then(invocation -> generatedId);
 
         //when
-        Ticket savedTicket = ticketDAO.saveTicket(ticket);
+        Ticket savedTicket = ticketDAO.addTicket(ticket);
 
 
         //then
@@ -76,16 +76,14 @@ class TicketDAOTest {
     @Test
     void saveTicket_add_new_ticket_is_copy_saved() {
         //given
-        int id = 151;
+       long id = 151;
         Ticket ticket = new Ticket(id, 9, 12, 201, 550L);
-        ticketDAO.saveTicket(ticket);
-
         Mockito.when(storage.getTickets()).then(invocation -> ticketsMapSpy);
-
         Mockito.when(storage.generateNextIdForClass(any())).then(invocation -> id);
+        ticketDAO.addTicket(ticket);
 
         //when
-        Ticket savedTicket = ticketDAO.saveTicket(ticket);
+        Ticket savedTicket = ticketDAO.updateTicket(ticket);
 
 
         //then
@@ -96,18 +94,18 @@ class TicketDAOTest {
     @Test
     void saveTicket_add_new_ticket_copy_put_to_storage() {
         //given
-        int id = 151;
+       long id = 151;
         Ticket ticket = new Ticket(id, 9, 12, 201, 550L);
-        ticketDAO.saveTicket(ticket);
 
         Mockito.when(storage.getTickets()).then(invocation -> ticketsMapSpy);
         Mockito.when(storage.generateNextIdForClass(any())).then(invocation -> id);
+        ticketDAO.addTicket(ticket);
 
         //when
-        Ticket savedTicket = ticketDAO.saveTicket(ticket);
+        Ticket savedTicket = ticketDAO.updateTicket(ticket);
 
         //then
-        Map<Integer, Ticket> tickets = storage.getTickets();
+        Map<Long, Ticket> tickets = storage.getTickets();
         assertEquals(1, tickets.size());
         assertEquals(tickets.get(id), savedTicket);
 
@@ -116,7 +114,7 @@ class TicketDAOTest {
     @Test
     void getTicketsByUserId() {
         //given
-        Integer id = 111;
+        long id = 111;
         Mockito.when(storage.getTickets()).then(invocation -> ticketsMapSpy);
 
         //when
@@ -131,7 +129,7 @@ class TicketDAOTest {
     @Test
     void deleteTicket() {
         //given
-        Integer id = 111;
+        long id = 111;
         Ticket ticket = new Ticket(id, 9, 12, 201, 550L);
         ticketsMapSpy.put(id, ticket);
 
@@ -151,7 +149,7 @@ class TicketDAOTest {
     @Test
     void getAllTickets() {
         //given
-        int userId = 9;
+       long userId = 9;
         Ticket ticket1 = new Ticket(1, userId, 12, 201, 550L);
         Ticket ticket2 = new Ticket(2, userId, 12, 201, 550L);
         Ticket ticket3 = new Ticket(3, 5, 12, 201, 550L);
@@ -175,7 +173,7 @@ class TicketDAOTest {
     @Test
     void getAllTicketsByEventId() {
         //given
-        int eventId = 12;
+       long eventId = 12;
         Ticket ticket1 = new Ticket(1, 9, 5, 201, 550L);
         Ticket ticket2 = new Ticket(2, 9, 10, 201, 550L);
         Ticket ticket3 = new Ticket(3, 5, eventId, 201, 550L);
@@ -185,9 +183,7 @@ class TicketDAOTest {
         ticketsMapSpy.put(ticket3.getId(), ticket3);
         ticketsMapSpy.put(ticket4.getId(), ticket4);
 
-        Mockito.when(storage.getTickets()).then(invocation -> {
-            return ticketsMapSpy;
-        });
+        Mockito.when(storage.getTickets()).then(invocation -> ticketsMapSpy);
 
         //when
         List<Ticket> ticketsByEventId = ticketDAO.getAllTicketsByEventId(eventId);

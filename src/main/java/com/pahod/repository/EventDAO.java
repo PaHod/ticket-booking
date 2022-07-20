@@ -9,28 +9,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class EventDAO implements IEventDAO {
+public class EventDAO {
 
     @Autowired
     CommonInMemoryStorage storage;
 
-    public Event saveEvent(Event eventToSave) {
-        Event savedEvent = storage.getEvents().get(eventToSave.getId());
-
-        if (eventToSave.getId() == null || savedEvent == null) {
-            savedEvent = new Event();
-            savedEvent.setId(storage.generateNextIdForClass(Event.class));
-            storage.getEvents().put(savedEvent.getId(), savedEvent);
-        }
+    public Event addEvent(Event eventToSave) {
+        Event savedEvent = new Event();
+        savedEvent.setId(storage.generateNextIdForClass(Event.class));
+        storage.getEvents().put(savedEvent.getId(), savedEvent);
         savedEvent.updateFrom(eventToSave);
         return savedEvent;
     }
 
-    public Event getEvent(Integer eventId) {
+    public Event saveEvent(Event eventToSave) {
+        Event savedEvent = storage.getEvents().get(eventToSave.getId());
+
+        if (savedEvent != null) {
+            savedEvent.updateFrom(eventToSave);
+        }
+        return savedEvent;
+    }
+
+    public Event getEvent(Long eventId) {
         return storage.getEvents().get(eventId);
     }
 
-    @Override
     public List<Event> getAllEvents() {
         return new ArrayList<>(storage.getEvents().values());
     }

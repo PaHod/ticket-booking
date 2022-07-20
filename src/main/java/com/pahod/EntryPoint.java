@@ -25,20 +25,34 @@ public class EntryPoint {
         logger.warn("A WARN Message");
         logger.error("An ERROR Message");
 
-        Event event = facade.newEvent(new Event(null, "Rock Simphony", "Palac Ukraina", 5000));
+        Event event = facade.newEvent(Event.builder()
+                .title("Rock Simphony").location("Palac Ukraina").availableSeats(5000)
+                .build());
 
 
-        User johanUser = facade.newUser(new User(null, "Johan"));
-        User peterUser = facade.newUser(new User(null, "Peter"));
 
-        facade.buyTicket(new Ticket(null, johanUser.getId(), event.getId(), 202, 500L));
-        facade.buyTicket(new Ticket(null, peterUser.getId(), event.getId(), 101, 750L));
+        User johanUser = facade.newUser(new User(0, "Johan", "Johan@mail.ep"));
+        User peterUser = facade.newUser(new User(0, "Peter", "Peter@mail.ep"));
+
+        facade.buyTicket(Ticket.builder()
+                .userId(johanUser.getId())
+                .eventId(event.getId())
+                .place(202)
+                .price(500L)
+                .build());
+
+        facade.buyTicket(Ticket.builder()
+                .userId(peterUser.getId())
+                .eventId(event.getId())
+                .place(101)
+                .price(750L)
+                .build());
 
         printAllUsers(facade);
         printAllTickets(facade);
         printAllEvents(facade);
 
-        logger.info("Total revenue for event \"{}\" is: {}", event.getName(), facade.getTotalRevenueForEvent(event.getId()));
+        logger.info("Total revenue for event \"{}\" is: {}", event.getTitle(), facade.getTotalRevenueForEvent(event.getId()));
 
         CommonInMemoryStorage storage = context.getBean(CommonInMemoryStorage.class);
         logger.trace("print all the storage: {}", storage);

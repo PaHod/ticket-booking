@@ -11,11 +11,11 @@
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="com.pahod.service" level="trace" additivity="false">
+    <logger name="com.pahod.service" level="info" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <root level="warn">
+    <root level="info">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

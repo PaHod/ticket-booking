@@ -9,10 +9,11 @@ class UserTest {
     @Test
     void updateFrom_all_field_updated() {
         //given
-        int id = 55;
-        User userTemplate = new User(id, "Peter");
+       long id = 55;
+        User userTemplate = new User(id, "Peter", "Peter@mail.test");
         User userToUpdate = new User();
         userToUpdate.setId(id);
+
         //when
         userToUpdate.updateFrom(userTemplate);
 
@@ -23,7 +24,7 @@ class UserTest {
     @Test
     void updateFrom_all_id_not_updated() {
         //given
-        User userTemplate = new User(55, "Peter");
+        User userTemplate = new User(55, "Peter", "Peter@mail.test");
         User userToUpdate = new User();
 
         //when

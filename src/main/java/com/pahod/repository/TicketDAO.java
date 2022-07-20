@@ -10,48 +10,51 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class TicketDAO implements ITicketDAO {
+public class TicketDAO {
 
     @Autowired
     CommonInMemoryStorage storage;
 
-    public Ticket saveTicket(Ticket ticketToSave) {
-        Ticket savedTicket = storage.getTickets().get(ticketToSave.getId());
-
-        if (ticketToSave.getId() == null || savedTicket == null) {
-            savedTicket = new Ticket();
-            savedTicket.setId(storage.generateNextIdForClass(Ticket.class));
-            storage.getTickets().put(savedTicket.getId(), savedTicket);
-        }
-        savedTicket.updateFrom(ticketToSave);
+    public Ticket addTicket(Ticket ticketToAdd) {
+        Ticket savedTicket = new Ticket();
+        savedTicket.setId(storage.generateNextIdForClass(Ticket.class));
+        storage.getTickets().put(savedTicket.getId(), savedTicket);
+        savedTicket.updateFrom(ticketToAdd);
         return savedTicket;
     }
 
-    public Ticket getTicket(Integer ticketId) {
+    public Ticket updateTicket(Ticket ticketToUpdate) {
+        Ticket savedTicket = storage.getTickets().get(ticketToUpdate.getId());
+
+        if (savedTicket != null) {
+            savedTicket.updateFrom(ticketToUpdate);
+        }
+        return savedTicket;
+    }
+
+    public Ticket getTicket(Long ticketId) {
         return storage.getTickets().get(ticketId);
     }
 
-    public List<Ticket> getTicketsByUserId(Integer userId) {
+    public List<Ticket> getTicketsByUserId(long userId) {
         return storage.getTickets().values().stream()
-                .filter(ticket -> ticket.getUserId().equals(userId))
+                .filter(ticket -> ticket.getUserId() == userId)
                 .collect(Collectors.toList());
     }
 
 
-    public boolean deleteTicket(Integer ticketId) {
+    public boolean deleteTicket(long ticketId) {
         return storage.getTickets().remove(ticketId) != null;
     }
 
-    @Override
     public List<Ticket> getAllTickets() {
         return new ArrayList<>(storage.getTickets().values());
     }
 
-    @Override
-    public List<Ticket> getAllTicketsByEventId(Integer eventId) {
+    public List<Ticket> getAllTicketsByEventId(long eventId) {
         return storage.getTickets().values()
                 .stream()
-                .filter(ticket -> ticket.getEventId().equals(eventId))
+                .filter(ticket -> ticket.getEventId() == eventId)
                 .collect(Collectors.toList());
     }
 }

@@ -7,6 +7,8 @@ import com.pahod.model.Ticket;
 import com.pahod.model.User;
 import lombok.Getter;
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +27,7 @@ import java.util.Map;
 @ToString
 public class CommonInMemoryStorage {
 
-
+    private static final Logger logger = LoggerFactory.getLogger(CommonInMemoryStorage.class);
 
     private JsonNode jsonTree;
 
@@ -33,17 +36,17 @@ public class CommonInMemoryStorage {
     @Value("${storage.initial.data.file}")
     private String filePath;
 
-    Map<Integer, Event> events = new HashMap<>();
+    Map<Long, Event> events = new HashMap<>();
 
-    Map<Integer, Ticket> tickets = new HashMap<>();
+    Map<Long, Ticket> tickets = new HashMap<>();
 
-    Map<Integer, User> users = new HashMap<>();
+    Map<Long, User> users = new HashMap<>();
 
-    Map<Class<?>, Integer> lastIdForClass = new HashMap<>();
+    Map<Class<?>, Long> lastIdForClass = new HashMap<>();
 
-    public int generateNextIdForClass(Class<?> className) {
-        Integer lastId = lastIdForClass.get(className);
-        int nextId = lastId == null ? 0 : lastId + 1;
+    public long generateNextIdForClass(Class<?> className) {
+        Long lastId = lastIdForClass.get(className);
+        long nextId = lastId == null ? 0 : lastId + 1;
         lastIdForClass.put(className, nextId);
         return nextId;
     }
@@ -59,16 +62,16 @@ public class CommonInMemoryStorage {
     }
 
     private void initMaps() throws IOException {
-        System.out.println(">>> @PostConstruct " + getClass().getSimpleName());
+        logger.info(">>> @PostConstruct " + getClass().getSimpleName());
 
         for (JsonNode jsonNode : jsonTree.get("events")) {
-            events.put(jsonNode.get("id").intValue(), jsonMapper.treeToValue(jsonNode, Event.class));
+            events.put(jsonNode.get("id").longValue(), jsonMapper.treeToValue(jsonNode, Event.class));
         }
         for (JsonNode jsonNode : jsonTree.get("tickets")) {
-            tickets.put(jsonNode.get("id").intValue(), jsonMapper.treeToValue(jsonNode, Ticket.class));
+            tickets.put(jsonNode.get("id").longValue(), jsonMapper.treeToValue(jsonNode, Ticket.class));
         }
         for (JsonNode jsonNode : jsonTree.get("users")) {
-            users.put(jsonNode.get("id").intValue(), jsonMapper.treeToValue(jsonNode, User.class));
+            users.put(jsonNode.get("id").longValue(), jsonMapper.treeToValue(jsonNode, User.class));
         }
 
         initLastId();
@@ -80,7 +83,7 @@ public class CommonInMemoryStorage {
         users.keySet().forEach(id -> lastIdForClass.put(User.class, getMax(id, lastIdForClass.get(User.class))));
     }
 
-    private int getMax(Integer id, Integer lastId) {
+    private long getMax(long id, Long lastId) {
         return Math.max(id, (lastId == null ? 0 : lastId));
     }
 
@@ -89,6 +92,7 @@ public class CommonInMemoryStorage {
             try {
                 String json = Files.readString(Path.of(filePath), StandardCharsets.UTF_8);
                 jsonMapper = new ObjectMapper();
+                jsonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm"));
                 jsonTree = jsonMapper.readTree(json);
             } catch (IOException e) {
                 e.printStackTrace();

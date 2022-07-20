@@ -8,36 +8,37 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: YANGI KISS SOLID DRY
 @Component
-public class UserDAO implements IUserDAO {
+public class UserDAO {
 
     @Autowired
     CommonInMemoryStorage storage;
 
-    public User saveUser(User userToSave) {
-        User savedUser = storage.getUsers().get(userToSave.getId());
-
-        if (userToSave.getId() == null || savedUser == null) {
-            savedUser = new User();
-            savedUser.setId(storage.generateNextIdForClass(User.class));
-            storage.getUsers().put(savedUser.getId(), savedUser);
-        }
+    public User addUser(User userToSave) {
+        User savedUser = new User();
+        savedUser.setId(storage.generateNextIdForClass(User.class));
+        storage.getUsers().put(savedUser.getId(), savedUser);
         savedUser.updateFrom(userToSave);
         return savedUser;
     }
 
-    @Override
-    public User getUserById(Integer userId) {
+    public User updateUser(User userToUpdate) {
+        User savedUser = storage.getUsers().get(userToUpdate.getId());
+        if (savedUser != null) {
+            savedUser.updateFrom(userToUpdate);
+        }
+        return savedUser;
+    }
+
+    public User getUserById(Long userId) {
         return storage.getUsers().get(userId);
     }
 
-    @Override
     public List<User> getAllUsers() {
         return new ArrayList<>(storage.getUsers().values());
     }
 
-    public void deleteUser(Integer userId) {
+    public void deleteUser(Long userId) {
         storage.getUsers().remove(userId);
     }
 }
