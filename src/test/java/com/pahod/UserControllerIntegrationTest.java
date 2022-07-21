@@ -48,26 +48,12 @@ class UserControllerIntegrationTest {
         User user3 = facade.createUser(new User(0, "Viktor", "Viktor@mail.test"));
         User user4 = facade.createUser(new User(0, "Stepan", "Stepan@mail.test"));
 
-        event0 = facade.createEvent(Event.builder()
-                .title("Rock Simphony").location("Palac Ukraina").availableSeats(5000)
-                .build());
+        event0 = facade.createEvent(Event.builder().title("Rock Simphony").location("Palac Ukraina").availableSeats(5000).build());
 
-        Event event1 = Event.builder()
-                .title("Mgzavrebi").location("Palac Sportu").availableSeats(5000)
-                .build();
-
-        Event event2 = Event.builder()
-                .title("Deep Purple").location("Palac Sportu").availableSeats(5000)
-                .build();
-
-        Event event3 = Event.builder()
-                .title("Jazz on the Roof").location("The Roof").availableSeats(250)
-                .build();
-
-        Event event4 = Event.builder()
-                .title("Skriabin").location("The Roof").availableSeats(250)
-                .build();
-
+        Event event1 = Event.builder().title("Mgzavrebi").location("Palac Sportu").availableSeats(5000).build();
+        Event event2 = Event.builder().title("Deep Purple").location("Palac Sportu").availableSeats(5000).build();
+        Event event3 = Event.builder().title("Jazz on the Roof").location("The Roof").availableSeats(250).build();
+        Event event4 = Event.builder().title("Skriabin").location("The Roof").availableSeats(250).build();
 
         Ticket ticket0 = facade.bookTicket(new Ticket(0, user0.getId(), event0.getId(), 101, 500L));
         Ticket ticket1 = facade.bookTicket(new Ticket(0, user1.getId(), event0.getId(), 102, 750L));
