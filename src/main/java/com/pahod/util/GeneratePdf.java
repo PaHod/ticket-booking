@@ -4,8 +4,9 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.pahod.dto.TicketFullDetailsDTO;
+import com.pahod.dto.TicketDetailedInfoDTO;
 import com.pahod.exception.SomethingWentWrongException;
+import org.springframework.http.ContentDisposition;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class GeneratePdf {
-    public static ByteArrayInputStream ticketsDetailsPdf(List<TicketFullDetailsDTO> bookedTickets) {
+    public static ByteArrayInputStream ticketsDetailsPdf(List<TicketDetailedInfoDTO> bookedTickets) {
         Document document = new Document();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -37,7 +38,7 @@ public class GeneratePdf {
             long userId = -1;
             String userName = null;
 
-            for (TicketFullDetailsDTO ticket : bookedTickets) {
+            for (TicketDetailedInfoDTO ticket : bookedTickets) {
                 if (userName == null) {
                     userId = ticket.getUserId();
                     userName = ticket.getUserName();
@@ -79,5 +80,18 @@ public class GeneratePdf {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         return cell;
+    }
+
+    public static ContentDisposition getDisposition(String displayType) {
+        ContentDisposition.Builder builder;
+        switch (displayType) {
+            case "download":
+                builder = ContentDisposition.attachment();
+                break;
+            case "view":
+            default:
+                builder = ContentDisposition.inline();
+        }
+        return builder.filename("tickets.pdf").build();
     }
 }

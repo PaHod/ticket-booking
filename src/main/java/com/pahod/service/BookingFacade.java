@@ -1,58 +1,71 @@
 package com.pahod.service;
 
-import com.pahod.dto.TicketFullDetailsDTO;
+import com.pahod.dto.TicketDetailedInfoDTO;
 import com.pahod.model.Event;
 import com.pahod.model.Ticket;
 import com.pahod.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
 public interface BookingFacade {
 
-    User newUser(User user);
+    User createUser(User user);
 
     User getUserById(long userId);
 
-    List<User> allUsers();
+    User getUserByName(String userName, int pageSize, int pageNum);
 
-    User updateUserDetails(User user);
+    User getUserByEmail(String userEmail);
 
-    void deleteUser(long userId);
+    List<User> getAllUsers();
+
+    User updateUser(User user);
+
+    boolean deleteUser(long userId);
 
 
-    Ticket buyTicket(Ticket ticket);
+    Ticket bookTicket(Ticket ticket);
 
     Ticket changeTicket(Ticket ticket);
 
-    boolean returnTicket(long ticketId, long userId);
+    boolean cancelTicket(long ticketId, long userId);
 
     List<Ticket> getBookedTickets();
 
     List<Ticket> getAllSoldTicketsForEvent(long eventId);
 
+    List<TicketDetailedInfoDTO> getBookedTickets(long userId, int pageSize, int pageNum);
 
-    Event newEvent(Event event);
+    void uploadTicketsBatch(MultipartFile multipartFile);
+
+
+    Event createEvent(Event event);
 
     List<Event> getAllEvents();
 
-    List<Event> getAllEventsOfUser(long userId);
+    List<Event> getEventsById(long eventId);
 
-    long getTotalRevenueForEvent(long id);
-
-    List<User> getAllUsers();
+    List<Event> getEventsByUserId(long userId);
 
     /**
-     * Get all booked tickets info for specified user. Tickets should be sorted by event date in descending order.
-     *
-     * @param userId   UserId
-     * @param pageSize Pagination param. Number of tickets to return on a page.
-     * @param pageNum  Pagination param. Number of the page to return. Starts from 1.
-     * @return List of Ticket objects.
+     * Get list of events for specified day.
+     * In case nothing was found, empty list is returned.
      */
-    List<TicketFullDetailsDTO> getBookedTickets(long userId, int pageSize, int pageNum);
+    List<Event> getEventsForDay(Date day, int pageSize, int pageNum);
 
-    void uploadTicketsBatch(MultipartFile multipartFile);
+    /**
+     * Get list of events by matching title. Title is matched using 'contains' approach.
+     * In case nothing was found, empty list is returned.
+     */
+    List<Event> getEventsByTitle(String title, int pageSize, int pageNum);
+
+    Event updateEvent(Event event);
+
+    boolean deleteEvent(long eventId);
+
+    long getTotalRevenueForEvent(long id);
 }

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -13,21 +12,20 @@
 <div class="container my-2" align="center">
 
     <h3>Tickets</h3>
-    <table style="width:80%" border="1"
-           class = "table table-striped table-responsive-md">
+    <table style="width:80%" border="1" class="table table-striped table-responsive-md">
         <thead>
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Email</th>
-        </tr>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
         </thead>
         <tbody>
-        <tr th:each="user:${allUsers}">
-            <td th:text="${user.id}"></td>
-            <td th:text="${user.name}"></td>
-            <td th:text="${user.email}"></td>
-        </tr>
+            <tr th:each="user:${allUsers}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.email}"></td>
+            </tr>
         </tbody>
     </table>
 </div>

@@ -8,9 +8,13 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * Representation {@link Ticket} with details of {@link User} and {@link Event}
+ */
+
 @Builder
 @Data
-public class TicketFullDetailsDTO {
+public class TicketDetailedInfoDTO {
     private long userId;
     private String userName;
 
@@ -23,8 +27,8 @@ public class TicketFullDetailsDTO {
     private Date eventDate;
     private String eventLocation;
 
-    public static TicketFullDetailsDTO build(User user, Ticket ticket, Event event) {
-        return TicketFullDetailsDTO.builder()
+    public static TicketDetailedInfoDTO build(User user, Ticket ticket, Event event) {
+        return TicketDetailedInfoDTO.builder()
                 .userId(user.getId())
                 .userName(user.getName())
                 .ticketId(ticket.getId())

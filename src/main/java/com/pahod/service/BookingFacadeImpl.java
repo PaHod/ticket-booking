@@ -1,20 +1,17 @@
 package com.pahod.service;
 
-import com.pahod.dto.TicketFullDetailsDTO;
+import com.pahod.dto.TicketDetailedInfoDTO;
 import com.pahod.exception.EmptyFileException;
 import com.pahod.exception.SomethingWentWrongException;
 import com.pahod.model.Event;
 import com.pahod.model.Ticket;
 import com.pahod.model.User;
+import com.pahod.util.BookingFacadeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-import java.io.StringReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,17 +24,15 @@ public class BookingFacadeImpl implements BookingFacade {
     TicketService ticketService;
     UserService userService;
 
-    public BookingFacadeImpl(EventService eventService,
-                             TicketService ticketService,
-                             UserService userService) {
+    public BookingFacadeImpl(EventService eventService, TicketService ticketService, UserService userService) {
         this.eventService = eventService;
         this.ticketService = ticketService;
         this.userService = userService;
     }
 
-
+    //region Users
     @Override
-    public User newUser(User user) {
+    public User createUser(User user) {
         return userService.addUser(user);
     }
 
@@ -47,25 +42,39 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
-    public User updateUserDetails(User user) {
-        return userService.updateUser(user);
+    public User getUserByName(String userName, int pageSize, int pageNum) {
+        // TODO: implement
+        return null;
     }
 
     @Override
-    public List<User> allUsers() {
+    public User getUserByEmail(String userEmail) {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @Override
-    public void deleteUser(long userId) {
-        ticketService.getTicketsByUserId(userId)
-                .forEach(ticket -> returnTicket(ticket.getId(), userId));
-        userService.deleteUser(userId);
+    public User updateUser(User user) {
+        return userService.updateUser(user);
     }
 
-
     @Override
-    public Ticket buyTicket(Ticket ticket) {
+    public boolean deleteUser(long userId) {
+        ticketService.getTicketsByUserId(userId)
+                .forEach(ticket -> cancelTicket(ticket.getId(), userId));
+        return userService.deleteUser(userId);
+    }
+    //endregion
+
+
+    //region Tickets
+    @Override
+    public Ticket bookTicket(Ticket ticket) {
         long eventId = ticket.getEventId();
         if (eventService.checkAvailableSeats(eventId, 1)) {
             eventService.soldTicketsForEvent(eventId, 1);
@@ -81,7 +90,7 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
-    public boolean returnTicket(long ticketId, long userId) {
+    public boolean cancelTicket(long ticketId, long userId) {
         Ticket ticket = ticketService.getTicket(ticketId);
         if (ticket.getUserId() == userId) {
             return ticketService.returnTicket(ticketId, userId);
@@ -95,13 +104,55 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
+    public List<TicketDetailedInfoDTO> getBookedTickets(long userId, int pageSize, int pageNum) {
+        List<Ticket> ticketsByUserId = ticketService.getTicketsByUserId(userId);
+        User user = userService.getUserById(userId);
+        Map<Long, Event> tempEventsMap = new HashMap<>();
+
+        List<TicketDetailedInfoDTO> sortedTickets = ticketsByUserId.stream()
+                .map(ticket -> {
+                    long eventId = ticket.getEventId();
+                    Event event = tempEventsMap.get(eventId);
+                    if (event == null) {
+                        event = eventService.getEvent(eventId);
+                        tempEventsMap.put(eventId, event);
+                    }
+                    return TicketDetailedInfoDTO.build(user, ticket, event);
+                })
+                .sorted(Comparator.comparing(TicketDetailedInfoDTO::getEventDate, Comparator.reverseOrder()))
+                .collect(Collectors.toList());
+
+        return BookingFacadeUtils.getPageItems(sortedTickets, pageSize, pageNum);
+    }
+
+    @Override
     public List<Ticket> getAllSoldTicketsForEvent(long eventId) {
         return ticketService.getAllTicketsByEventId(eventId);
     }
 
-
     @Override
-    public Event newEvent(Event event) {
+    public void uploadTicketsBatch(MultipartFile file) {
+        logger.debug("Try to process the tickets batch");
+        try {
+            if (file.isEmpty()) {
+                throw new EmptyFileException(file.getOriginalFilename());
+            }
+
+            List<Ticket> tickets = BookingFacadeUtils.parseTicketsBatch(file);
+            tickets.forEach(this::bookTicket);
+            logger.info("Successfully parsed Tickets batch");
+        } catch (Exception e) {
+            String m = "Could not process the batch";
+            e.printStackTrace();
+            logger.error(m);
+            throw new SomethingWentWrongException(m);
+        }
+    }
+    //endregion
+
+    //region Events
+    @Override
+    public Event createEvent(Event event) {
         return eventService.addEvent(event);
     }
 
@@ -111,8 +162,39 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
-    public List<Event> getAllEventsOfUser(long userId) {
+    public List<Event> getEventsById(long eventId) {
+        // TODO: implement
         return null;
+    }
+
+    @Override
+    public List<Event> getEventsByUserId(long userId) {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public List<Event> getEventsForDay(Date day, int pageSize, int pageNum) {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public List<Event> getEventsByTitle(String title, int pageSize, int pageNum) {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public Event updateEvent(Event event) {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public boolean deleteEvent(long eventId) {
+        // TODO: implement
+        return false;
     }
 
     @Override
@@ -122,78 +204,5 @@ public class BookingFacadeImpl implements BookingFacade {
                 .mapToLong(Ticket::getPrice)
                 .sum();
     }
-
-    @Override
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
-    }
-
-    @Override
-    public List<TicketFullDetailsDTO> getBookedTickets(long userId, int pageSize, int pageNum) {
-        List<Ticket> ticketsByUserId = ticketService.getTicketsByUserId(userId);
-        User user = userService.getUserById(userId);
-        Map<Long, Event> tempEventsMap = new HashMap<>();
-
-        List<TicketFullDetailsDTO> sortedTickets = ticketsByUserId.stream()
-                .map(ticket -> {
-                    long eventId = ticket.getEventId();
-                    Event event = tempEventsMap.get(eventId);
-                    if (event == null) {
-                        event = eventService.getEvent(eventId);
-                        tempEventsMap.put(eventId, event);
-                    }
-                    return TicketFullDetailsDTO.build(user, ticket, event);
-                })
-                .sorted(Comparator.comparing(TicketFullDetailsDTO::getEventDate, Comparator.reverseOrder()))
-                .collect(Collectors.toList());
-
-        int pageStartIndex = (pageNum - 1) * pageSize;
-        if (pageStartIndex > sortedTickets.size()) {
-            return Collections.emptyList();
-        }
-
-        int pageLastIndex = pageStartIndex + pageSize;
-
-        sortedTickets.subList(pageStartIndex, Math.min(sortedTickets.size(), pageLastIndex));
-
-        return sortedTickets;
-    }
-
-    @Override
-    public void uploadTicketsBatch(MultipartFile file) {
-        logger.debug("Try to process the tickets batch");
-        try {
-
-            if (file.isEmpty()) {
-                throw new EmptyFileException(file.getOriginalFilename());
-            }
-//            printUploadedFile(file);
-
-            JAXBContext jaxbContext = JAXBContext.newInstance(Ticket.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            Ticket parsedTicket = (Ticket) unmarshaller.unmarshal(new StreamSource(file.getInputStream()));
-
-            logger.info(">>>>>>>>> parsedTicket: " + parsedTicket);
-            List<Ticket> ticketsBatch = new ArrayList<>();
-            ticketsBatch.add(parsedTicket);
-
-            ticketsBatch.forEach(this::buyTicket);
-        } catch (Exception e) {
-            logger.error("Could not process the batch");
-            e.printStackTrace();
-            throw new SomethingWentWrongException("Could not process the batch");
-        }
-    }
-
-    private void printUploadedFile(MultipartFile file) {
-        try {
-            Scanner scanner = new Scanner(file.getInputStream());
-            while (scanner.hasNext()) {
-                logger.info(scanner.next());
-            }
-            scanner.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    //endregion
 }

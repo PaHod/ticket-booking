@@ -46,7 +46,7 @@ class BookingFacadeImplTest {
         Mockito.when(userService.addUser(any())).thenAnswer(invocation -> user);
 
         //when
-        User returnedUser = bookingFacade.newUser(user);
+        User returnedUser = bookingFacade.createUser(user);
 
         //then
         Mockito.verify(userService, Mockito.times(1)).addUser(any());
@@ -73,7 +73,7 @@ class BookingFacadeImplTest {
         });
 
         //when
-        bookingFacade.buyTicket(ticket);
+        bookingFacade.bookTicket(ticket);
 
         //then
         Mockito.verify(ticket, Mockito.times(1)).getEventId();
@@ -99,7 +99,7 @@ class BookingFacadeImplTest {
 
 
         //when
-        bookingFacade.buyTicket(ticket);
+        bookingFacade.bookTicket(ticket);
 
         //then
         Mockito.verify(ticket, Mockito.times(1)).getEventId();
@@ -115,7 +115,7 @@ class BookingFacadeImplTest {
         Mockito.when(ticketService.addTicket(any())).thenAnswer(invocation -> ticket);
 
         //when
-        Ticket returnedTicket = bookingFacade.buyTicket(ticket);
+        Ticket returnedTicket = bookingFacade.bookTicket(ticket);
 
         //then
         Mockito.verify(ticketService, Mockito.times(1)).addTicket(any());
@@ -130,7 +130,7 @@ class BookingFacadeImplTest {
         Mockito.when(eventService.checkAvailableSeats(any(Long.class), any(Integer.class))).thenAnswer(invocation -> false);
 
         //when
-        Ticket returnedTicket = bookingFacade.buyTicket(ticket);
+        Ticket returnedTicket = bookingFacade.bookTicket(ticket);
 
         //then
         Mockito.verify(eventService, Mockito.times(1)).checkAvailableSeats(any(Long.class), any(Integer.class));
@@ -150,7 +150,7 @@ class BookingFacadeImplTest {
         Mockito.when(ticketService.returnTicket(any(Long.class), any(Long.class))).thenAnswer(invocation -> true);
 
         //when
-        bookingFacade.returnTicket(ticketId, userId);
+        bookingFacade.cancelTicket(ticketId, userId);
 
         //then
         Mockito.verify(ticketService, Mockito.times(1)).getTicket(any(Long.class));
@@ -168,7 +168,7 @@ class BookingFacadeImplTest {
         Mockito.when(ticketService.getTicket(any(Long.class))).thenAnswer(invocation -> ticket);
 
         //when
-        bookingFacade.returnTicket(ticketId, userId + 1);
+        bookingFacade.cancelTicket(ticketId, userId + 1);
 
         //then
         Mockito.verify(ticketService, Mockito.times(1)).getTicket(any(Long.class));
@@ -193,7 +193,7 @@ class BookingFacadeImplTest {
         Mockito.when(eventService.addEvent(any())).thenAnswer(invocation -> event);
 
         //when
-        Event returnedEvent = bookingFacade.newEvent(event);
+        Event returnedEvent = bookingFacade.createEvent(event);
 
         //then
         Mockito.verify(eventService, Mockito.times(1)).addEvent(any());

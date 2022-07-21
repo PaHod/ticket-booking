@@ -38,7 +38,7 @@ public class UserDAO {
         return new ArrayList<>(storage.getUsers().values());
     }
 
-    public void deleteUser(Long userId) {
-        storage.getUsers().remove(userId);
+    public boolean deleteUser(Long userId) {
+        return storage.getUsers().remove(userId) != null;
     }
 }

@@ -10,27 +10,37 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.matches;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-class IntegrationTest {
+@AutoConfigureMockMvc
+class UserControllerIntegrationTest {
 
     @Autowired
     private ApplicationContext context;
+
+    @Autowired
+    MockMvc mockMvc;
 
     private BookingFacade facade;
     private Event event0;
 
     @BeforeAll
-    void stUp() {
+    void stUp() throws Exception {
         facade = context.getBean(BookingFacade.class);
         User user0 = facade.createUser(new User(0, "Peter", "Peter@mail.test"));
         User user1 = facade.createUser(new User(0, "Johan", "Johan@mail.test"));
@@ -73,31 +83,24 @@ class IntegrationTest {
     }
 
     @Test
-    void test_users_has_positive_unique_id() {
-        ArrayList<Long> ids = new ArrayList<>();
+    void test_get_all_users_success() throws Exception {
+        List<User> allUsers = facade.getAllUsers();
 
-        for (User user : facade.getAllUsers()) {
-            long id = user.getId();
-
-            assertTrue(id >= 0);
-            assertFalse(ids.contains(id));
-
-            ids.add(id);
-        }
+        mockMvc.perform(get("/users"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users"))
+                .andExpect(model().attribute("users", allUsers))
+                .andExpect(model().attribute("message", "Users list"))
+                .andDo(print());
     }
 
     @Test
-    void test_event1_has_3_sold_tickets() {
-        List<Ticket> allSoldTicketsForEvent = facade.getAllSoldTicketsForEvent(event0.getId());
-
-        assertEquals(3, allSoldTicketsForEvent.size());
+    void test_get_all_users_fail() throws Exception {
+        long id = 5599;
+        mockMvc.perform(get("/users/byId/" + id))
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/error-500"))
+                .andExpect(model().attribute("message", "Not found user with id: " + id))
+                .andDo(print());
     }
-
-    @Test
-    void test_total_revenue() {
-        long totalRevenueForEvent = facade.getTotalRevenueForEvent(event0.getId());
-
-        assertEquals(2000, totalRevenueForEvent);
-    }
-
 }

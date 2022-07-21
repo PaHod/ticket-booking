@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller()
-@RequestMapping("/upload-tickets")
+@RequestMapping("/tickets/upload")
 public class InputBatchController {
     private static final Logger logger = LoggerFactory.getLogger(InputBatchController.class);
 
@@ -22,17 +22,16 @@ public class InputBatchController {
 
     @GetMapping()
     public String uploadForm() {
-        return "upload-tickets";
+        return "tickets-upload";
     }
 
     @PostMapping()
     public String uploadTicketsBatch(@RequestParam("file") MultipartFile multipartFile, Model model) {
-
         bookingFacade.uploadTicketsBatch(multipartFile);
 
         String message = "File uploaded  " + multipartFile.getOriginalFilename();
         logger.info(message);
         model.addAttribute("message", message);
-        return "tickets-loaded";
+        return "tickets-upload";
     }
 }

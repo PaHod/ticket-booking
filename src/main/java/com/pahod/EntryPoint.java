@@ -25,23 +25,23 @@ public class EntryPoint {
         logger.warn("A WARN Message");
         logger.error("An ERROR Message");
 
-        Event event = facade.newEvent(Event.builder()
+        Event event = facade.createEvent(Event.builder()
                 .title("Rock Simphony").location("Palac Ukraina").availableSeats(5000)
                 .build());
 
 
 
-        User johanUser = facade.newUser(new User(0, "Johan", "Johan@mail.ep"));
-        User peterUser = facade.newUser(new User(0, "Peter", "Peter@mail.ep"));
+        User johanUser = facade.createUser(new User(0, "Johan", "Johan@mail.ep"));
+        User peterUser = facade.createUser(new User(0, "Peter", "Peter@mail.ep"));
 
-        facade.buyTicket(Ticket.builder()
+        facade.bookTicket(Ticket.builder()
                 .userId(johanUser.getId())
                 .eventId(event.getId())
                 .place(202)
                 .price(500L)
                 .build());
 
-        facade.buyTicket(Ticket.builder()
+        facade.bookTicket(Ticket.builder()
                 .userId(peterUser.getId())
                 .eventId(event.getId())
                 .place(101)
@@ -59,7 +59,7 @@ public class EntryPoint {
     }
 
     private static void printAllUsers(BookingFacadeImpl facade) {
-        for (User user : facade.allUsers()) {
+        for (User user : facade.getAllUsers()) {
             logger.trace(user.toString());
         }
     }
